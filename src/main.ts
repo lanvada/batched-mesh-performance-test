@@ -66,7 +66,7 @@ batchedButton.addEventListener('click', loadBatched);
 
 // Progress bar element
 const progressBar = document.getElementById('progress-bar')!;
-const url = 'https://storage.metropolis-echo.com/test-model/glb/test.glb';
+const url = '/models/test.glb';
 
 loadNoBatched();
 
