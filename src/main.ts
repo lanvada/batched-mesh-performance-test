@@ -65,7 +65,6 @@ const batchedButton = document.getElementById('batched')!;
 batchedButton.addEventListener('click', loadBatched);
 
 // Progress bar element
-const progressBar = document.getElementById('progress-bar')!;
 const url = '/models/test.glb';
 
 loadNoBatched();
@@ -79,10 +78,6 @@ function render() {
 }
 
 function loadBatched() {
-  // display the progress bar and reset progress
-  progressBar.style.display = 'block';
-  progressBar.style.width = '0%';
-  progressBar.textContent = '0%';
   if (model) {
     scene.remove(model);
   }
@@ -93,16 +88,8 @@ function loadBatched() {
       // const bbox = new Box3().setFromObject(model);
       // model.position.y += bbox.max.y / 2;
       scene.add(model);
-      progressBar.style.display = 'none';
     },
-    function (xhr) {
-      // Update the progress bar
-      if (xhr.lengthComputable) {
-        const percentComplete = (xhr.loaded / xhr.total) * 100;
-        progressBar.style.width = percentComplete + '%';
-        progressBar.textContent = Math.round(percentComplete) + '%';
-      }
-    },
+    undefined,
     (error) => {
       console.error(error);
     },
@@ -111,9 +98,6 @@ function loadBatched() {
 
 function loadNoBatched() {
   // display the progress bar and reset progress
-  progressBar.style.display = 'block';
-  progressBar.style.width = '0%';
-  progressBar.textContent = '0%';
   if (model) {
     scene.remove(model);
   }
@@ -124,16 +108,8 @@ function loadNoBatched() {
       // const bbox = new Box3().setFromObject(model);
       // model.position.y += bbox.max.y / 2;
       scene.add(model);
-      progressBar.style.display = 'none';
     },
-    function (xhr) {
-      // Update the progress bar
-      if (xhr.lengthComputable) {
-        const percentComplete = (xhr.loaded / xhr.total) * 100;
-        progressBar.style.width = percentComplete + '%';
-        progressBar.textContent = Math.round(percentComplete) + '%';
-      }
-    },
+    undefined,
     (error) => {
       console.error(error);
     },
