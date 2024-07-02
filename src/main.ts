@@ -1,14 +1,8 @@
 import {
-  Box3,
   Color,
   DirectionalLight,
-  DoubleSide,
-  GridHelper,
   HemisphereLight,
-  Mesh,
-  MeshBasicMaterial,
   PerspectiveCamera,
-  PlaneGeometry,
   Scene,
   WebGLRenderer,
   type Object3D,
@@ -66,19 +60,20 @@ dracoLoader.setDecoderPath('/libs/draco/');
 gltfLoader.setDRACOLoader(dracoLoader);
 
 // add a grid helper and a ground plane
-const gridHelper = new GridHelper(1000, 100);
-scene.add(gridHelper);
-const ground = new Mesh(
-  new PlaneGeometry(1000, 1000),
-  new MeshBasicMaterial({
-    color: 0x444444,
-    side: DoubleSide,
-    transparent: true,
-    opacity: 0.5,
-  }),
-);
-ground.rotation.x = Math.PI / 2;
-scene.add(ground);
+// const gridHelper = new GridHelper(1000, 100);
+// scene.add(gridHelper);
+// const ground = new Mesh(
+//   new PlaneGeometry(1000, 1000),
+//   new MeshBasicMaterial({
+//     color: 0x444444,
+//     side: DoubleSide,
+//     transparent: true,
+//     opacity: 0.5,
+//   }),
+// );
+// ground.rotation.x = Math.PI / 2;
+// scene.add(ground);
+loadNoBatched();
 
 render();
 // render the scene
@@ -93,6 +88,9 @@ noBatchedButton.addEventListener('click', loadNoBatched);
 const batchedButton = document.getElementById('batched')!;
 batchedButton.addEventListener('click', loadBatched);
 
+// Progress bar element
+const progressBar = document.getElementById('progress-bar')!;
+
 function loadBatched() {
   if (model) {
     scene.remove(model);
@@ -101,11 +99,19 @@ function loadBatched() {
     '/models/test.glb',
     async (gltf) => {
       model = (await GLTFToolkit.parseMeshFeatures(gltf)).scene;
-      const bbox = new Box3().setFromObject(model);
-      model.position.y += bbox.max.y / 2;
-      scene.attach(model);
+      // const bbox = new Box3().setFromObject(model);
+      // model.position.y += bbox.max.y / 2;
+      scene.add(model);
+      progressBar.style.display = 'none';
     },
-    undefined,
+    function (xhr) {
+      // Update the progress bar
+      if (xhr.lengthComputable) {
+        const percentComplete = (xhr.loaded / xhr.total) * 100;
+        progressBar.style.width = percentComplete + '%';
+        progressBar.textContent = Math.round(percentComplete) + '%';
+      }
+    },
     (error) => {
       console.error(error);
     },
@@ -120,11 +126,19 @@ function loadNoBatched() {
     '/models/test.glb',
     (gltf) => {
       model = gltf.scene;
-      const bbox = new Box3().setFromObject(model);
-      model.position.y += bbox.max.y / 2;
-      scene.attach(model);
+      // const bbox = new Box3().setFromObject(model);
+      // model.position.y += bbox.max.y / 2;
+      scene.add(model);
+      progressBar.style.display = 'none';
     },
-    undefined,
+    function (xhr) {
+      // Update the progress bar
+      if (xhr.lengthComputable) {
+        const percentComplete = (xhr.loaded / xhr.total) * 100;
+        progressBar.style.width = percentComplete + '%';
+        progressBar.textContent = Math.round(percentComplete) + '%';
+      }
+    },
     (error) => {
       console.error(error);
     },
