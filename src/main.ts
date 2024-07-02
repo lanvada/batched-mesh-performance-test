@@ -59,20 +59,15 @@ const dracoLoader = new DRACOLoader();
 dracoLoader.setDecoderPath('/libs/draco/');
 gltfLoader.setDRACOLoader(dracoLoader);
 
-// add a grid helper and a ground plane
-// const gridHelper = new GridHelper(1000, 100);
-// scene.add(gridHelper);
-// const ground = new Mesh(
-//   new PlaneGeometry(1000, 1000),
-//   new MeshBasicMaterial({
-//     color: 0x444444,
-//     side: DoubleSide,
-//     transparent: true,
-//     opacity: 0.5,
-//   }),
-// );
-// ground.rotation.x = Math.PI / 2;
-// scene.add(ground);
+const noBatchedButton = document.getElementById('noBatched')!;
+noBatchedButton.addEventListener('click', loadNoBatched);
+const batchedButton = document.getElementById('batched')!;
+batchedButton.addEventListener('click', loadBatched);
+
+// Progress bar element
+const progressBar = document.getElementById('progress-bar')!;
+const url = '/api/test-model/glb/test.glb';
+
 loadNoBatched();
 
 render();
@@ -83,20 +78,16 @@ function render() {
   requestAnimationFrame(render);
 }
 
-const noBatchedButton = document.getElementById('noBatched')!;
-noBatchedButton.addEventListener('click', loadNoBatched);
-const batchedButton = document.getElementById('batched')!;
-batchedButton.addEventListener('click', loadBatched);
-
-// Progress bar element
-const progressBar = document.getElementById('progress-bar')!;
-
 function loadBatched() {
+  // display the progress bar and reset progress
+  progressBar.style.display = 'block';
+  progressBar.style.width = '0%';
+  progressBar.textContent = '0%';
   if (model) {
     scene.remove(model);
   }
   gltfLoader.load(
-    '/models/test.glb',
+    url,
     async (gltf) => {
       model = (await GLTFToolkit.parseMeshFeatures(gltf)).scene;
       // const bbox = new Box3().setFromObject(model);
@@ -119,11 +110,15 @@ function loadBatched() {
 }
 
 function loadNoBatched() {
+  // display the progress bar and reset progress
+  progressBar.style.display = 'block';
+  progressBar.style.width = '0%';
+  progressBar.textContent = '0%';
   if (model) {
     scene.remove(model);
   }
   gltfLoader.load(
-    '/models/test.glb',
+    url,
     (gltf) => {
       model = gltf.scene;
       // const bbox = new Box3().setFromObject(model);
